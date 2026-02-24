@@ -238,6 +238,8 @@ The flight search applies default filters:
 | GET    | /api/auth/user        | Get current user  | Auth   |
 | GET    | /api/users            | List users        | Admin  |
 | POST   | /api/users            | Create user       | Admin  |
+| GET    | /api/users/{id}       | View user         | Admin  |
+| PUT    | /api/users/{id}       | Update user       | Admin  |
 | DELETE | /api/users/{id}       | Delete user       | Admin  |
 | GET    | /api/dashboard/charts | Get chart data    | Admin  |
 | GET    | /api/flights          | List flights      | Admin  |
@@ -250,23 +252,27 @@ The flight search applies default filters:
 
 ## Web Routes
 
-| Method | Endpoint            | Description     | Access |
-| ------ | ------------------- | --------------- | ------ |
-| GET    | /login              | Login page      | Guest  |
-| POST   | /login              | Submit login    | Guest  |
-| GET    | /register           | Register page   | Guest  |
-| POST   | /register           | Submit register | Guest  |
-| POST   | /logout             | Logout          | Auth   |
-| GET    | /dashboard          | User dashboard  | User   |
-| GET    | /admin/dashboard    | Admin dashboard | Admin  |
-| GET    | /admin/users        | User management | Admin  |
-| POST   | /admin/users        | Create user     | Admin  |
+| Method | Endpoint              | Description     | Access |
+| ------ | --------------------- | --------------- | ------ |
+| GET    | /login                | Login page      | Guest  |
+| POST   | /login                | Submit login    | Guest  |
+| GET    | /register             | Register page   | Guest  |
+| POST   | /register             | Submit register | Guest  |
+| POST   | /logout               | Logout          | Auth   |
+| GET    | /dashboard            | User dashboard  | User   |
+| GET    | /admin/dashboard     | Admin dashboard | Admin  |
+| GET    | /admin/users         | User list       | Admin  |
+| GET    | /admin/users/create  | Create user     | Admin  |
+| POST   | /admin/users         | Create user     | Admin  |
+| GET    | /admin/users/{id}    | View user       | Admin  |
+| GET    | /admin/users/{id}/edit | Edit user     | Admin  |
+| PUT    | /admin/users/{id}    | Update user     | Admin  |
 | DELETE | /admin/users/{id}   | Delete user     | Admin  |
-| GET    | /admin/users/{id}   | View user       | Admin  |
-| GET    | /admin/flights      | Flight list     | Admin  |
+| GET    | /admin/flights       | Flight list     | Admin  |
+| GET    | /admin/flights/create | Create flight  | Admin  |
 | POST   | /admin/flights      | Create flight   | Admin  |
-| DELETE | /admin/flights/{id} | Delete flight   | Admin  |
 | GET    | /admin/flights/{id} | View flight     | Admin  |
+| DELETE | /admin/flights/{id} | Delete flight   | Admin  |
 
 ---
 
@@ -449,6 +455,7 @@ DB_HOST=mysql
 ```bash
 docker-compose exec app chown -R www-data:www-data /var/www/html/storage
 docker-compose exec app chmod -R 755 /var/www/html/storage
+docker-compose exec app chmod -R 755 /var/www/html/resources/views/components
 ```
 
 ### Clear Cache
@@ -478,8 +485,12 @@ If you see tempnam() warnings, the PHP-FPM is configured with proper temp direct
 
 ```dockerfile
 RUN echo "[www]" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
-    && echo "php_admin_value[sys_temp_dir] = /tmp" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
-    && echo "php_admin_value[open_basedir] = /tmp:/var/www/html" >> /usr/local/etc/php-fpm.d/zz-docker.conf
+    && echo "php_admin_value[sys_temp_dir] = /var/www/html/storage/tmp" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
+    && echo "php_admin_value[upload_tmp_dir] = /var/www/html/storage/tmp" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
+    && echo "php_admin_value[open_basedir] = /var/www/html" >> /usr/local/etc/php-fpm.d/zz-docker.conf
+
+RUN mkdir -p /var/www/html/storage/tmp \
+    && chmod 777 /var/www/html/storage/tmp
 ```
 
 ---
