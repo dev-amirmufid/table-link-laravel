@@ -193,11 +193,10 @@ The application will be available at http://localhost:8000
 
 - [x] List Users (Admin)
 - [x] Create User (Admin)
+- [x] Edit User (Admin)
 - [x] Delete User (Admin - Soft Delete)
 - [x] Update User Role
 - [x] View User Details
-
-> **Note**: Edit feature has been removed from User Management
 
 ### Dashboard (Admin)
 

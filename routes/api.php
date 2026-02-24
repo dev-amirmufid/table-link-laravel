@@ -26,6 +26,7 @@ Route::middleware(['web', 'auth:web'])->group(function () {
         Route::get('/', [ApiUserController::class, 'index']);
         Route::post('/', [ApiUserController::class, 'store']);
         Route::get('/{id}', [ApiUserController::class, 'show']);
+        Route::put('/{id}', [ApiUserController::class, 'update']);
         Route::delete('/{id}', [ApiUserController::class, 'destroy']);
     });
 

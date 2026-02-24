@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/create', [WebUserController::class, 'create'])->name('admin.users.create');
         Route::post('/users', [WebUserController::class, 'store'])->name('admin.users.store');
         Route::get('/users/{id}', [WebUserController::class, 'show'])->name('admin.users.show');
+        Route::get('/users/{id}/edit', [WebUserController::class, 'edit'])->name('admin.users.edit');
+        Route::put('/users/{id}', [WebUserController::class, 'update'])->name('admin.users.update');
         Route::delete('/users/{id}', [WebUserController::class, 'destroy'])->name('admin.users.destroy');
 
         // Flight Information

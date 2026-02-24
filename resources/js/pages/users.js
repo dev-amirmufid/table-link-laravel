@@ -51,6 +51,7 @@ function renderUsers(users) {
             <td class="px-6 py-4 whitespace-nowrap">${user.last_login ? user.last_login : 'Never'}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <a href="/admin/users/${user.id}" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
+                <a href="/admin/users/${user.id}/edit" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
                 <button onclick="deleteUser(${user.id})" class="text-red-600 hover:text-red-900">Delete</button>
             </td>
         </tr>

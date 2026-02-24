@@ -59,6 +59,87 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Edit User Form
+    const editUserForm = document.getElementById('editUserForm');
+    if (editUserForm) {
+        const userId = document.getElementById('userId')?.value;
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const response = await window.axios.get(`/api/users/${userId}`);
+                const user = response.data.user;
+
+                document.getElementById('name').value = user.name;
+                document.getElementById('email').value = user.email;
+                document.getElementById('role').value = user.role;
+            } catch (error) {
+                console.error('Error loading user:', error);
+                alert('Error loading user data');
+            }
+        }
+
+        if (userId) loadUserData();
+
+        editUserForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Clear errors
+            document.querySelectorAll('[id$="Error"]').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+            const successMsg = document.getElementById('successMessage');
+            if (successMsg) successMsg.classList.add('hidden');
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Updating...';
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                role: document.getElementById('role').value,
+            };
+
+            // Only include password if filled
+            const password = document.getElementById('password')?.value;
+            if (password) {
+                formData.password = password;
+                formData.password_confirmation = document.getElementById('password_confirmation').value;
+            }
+
+            try {
+                await window.axios.put(`/api/users/${userId}`, formData);
+
+                if (successMsg) {
+                    successMsg.textContent = 'User updated successfully!';
+                    successMsg.classList.remove('hidden');
+                }
+
+                setTimeout(() => {
+                    window.location.href = '/admin/users';
+                }, 1000);
+            } catch (error) {
+                if (error.response?.status === 422) {
+                    const errors = error.response.data.errors;
+                    for (const [key, messages] of Object.entries(errors)) {
+                        const errorEl = document.getElementById(`${key}Error`);
+                        if (errorEl) {
+                            errorEl.textContent = messages[0];
+                            errorEl.classList.remove('hidden');
+                        }
+                    }
+                } else {
+                    alert('Error updating user');
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Update User';
+            }
+        });
+    }
+
     // Create Flight Form
     const createFlightForm = document.getElementById('createFlightForm');
     if (createFlightForm) {
